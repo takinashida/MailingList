@@ -1,0 +1,26 @@
+{% extends 'mail/base.html' %}
+{% block title %}Добавление рассылки{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="text-center text-white">Добавить рассылку</h2>
+            <form method="post" enctype="multipart/form-data">
+                <div class="card text-white" style="background-color: #212529;">
+                    <div class="card-body">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="background-color: #1a1c1f;">
+                        {% if object %}
+                        Сохранить
+                        {% else %}
+                        Создать
+                        {% endif %}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+{% endblock %}

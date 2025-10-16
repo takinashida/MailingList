@@ -1,0 +1,28 @@
+{% extends 'mail/base.html' %}
+{% block title %}{{ object.letter.subject }}{% endblock %}
+
+{% block content %}
+<!-- Контент -->
+
+
+<div class="col-md-4 d-flex justify-content-center align-items-stretch p-3">
+  <div class="card border-0 shadow-lg w-100" style="background-color: #212529;">
+      <div class="text-center">
+          <span class="fs-3 p-3 text-white">{{ object.letter.subject }}</span>
+      </div>
+      <hr class="white-hr">
+      <div class="card-body">
+          {% for recipient in object.recipients.all %}
+          <p class="card-text text-white">{{ recipient }}</p>
+          {% endfor %}
+          <form method="post" action="{% url 'mail:mailing_do' mailing.pk %}">
+              {% csrf_token %}
+            <button type="submit" class="btn text-white" style="background-color: #1a1c1f;">Отправить "{{ object.letter.subject}}"</button>
+          </form>
+          <a href="{% url 'mail:mailing_trys' mailing.pk %}" class="btn text-white" style="background-color: #1a1c1f;">Посмотреть попытки</a>
+          <a href="{% url 'mail:mailing_update' mailing.pk %}" class="btn text-white" style="background-color: #1a1c1f;">Изменить "{{ object.letter.subject}}"</a>
+          <a href="{% url 'mail:mailing_delete' mailing.pk %}" class="btn text-white" style="background-color: #1a1c1f;">Удалить "{{ object.letter.subject }}"</a>
+      </div>
+  </div>
+</div>
+{% endblock %}

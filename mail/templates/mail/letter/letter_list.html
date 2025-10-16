@@ -1,0 +1,25 @@
+{% extends 'mail/base.html' %}
+{% block title %}Список получателей{% endblock %}
+
+{% block content %}
+<!-- Контент -->
+
+  <div class="row justify-content-center">
+      {% for letter in object_list %}
+      <div class="col-md-4 d-flex justify-content-center align-items-stretch p-3">
+          <div class="card border-0 shadow-lg w-100" style="background-color: #212529;">
+              <div class="text-center">
+                  <span class="fs-3 p-3 text-white">{{ letter.subject }}</span>
+              </div>
+              <hr class="white-hr">
+              <div class="card-body">
+                  <p class="card-text text-white">{{ letter.letter_body| truncatechars:100 }}</p>
+
+                  <a href="{% url 'mail:letter_detail' letter.pk %}" class="btn text-white" style="background-color: #1a1c1f;">Подробнее</a>
+              </div>
+          </div>
+      </div>
+      {% endfor %}
+  </div>
+
+{% endblock %}

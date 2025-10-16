@@ -1,0 +1,26 @@
+{% extends 'mail/base.html' %}
+{% block title %}Удаление письмо{% endblock %}
+
+{% block content %}
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="text-center text-white">Удалить письмо</h2>
+            <form method="post" enctype="multipart/form-data">
+                <div class="card" style="background-color: #212529;">
+                    <p class=" card-text text-white">Действительно хотите удалить {{ object.email }}?</p>
+                    <div class="card-body">
+                        {% csrf_token %}
+                    </div>
+                    <button type="submit" class="btn text-white" style="background-color: #1a1c1f;">
+                        Удалить
+                    </button>
+                    <a href='{% url "mail:letter_list"%}' class="btn text-white" style="background-color: #1a1c1f;">
+                        Нет
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

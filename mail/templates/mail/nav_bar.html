@@ -1,0 +1,66 @@
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm" style="background-color: #212529;">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <i class="bi bi-lightning-charge me-2"></i>
+        <span>Brand</span>
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Переключить навигацию">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="mainNavbar">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link{% if request.resolver_match.url_name == 'home' %} active{% endif %}" href="{% url 'mail:index' %}">Главная</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{% if request.resolver_match.url_name == 'about' %} active{% endif %}" href="#">О нас</a>
+          </li>
+
+          <!-- Выпадающее меню (пример) -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Разделы
+            </a>
+            <ul class="dropdown-menu" style="background-color: #212529;">
+              <li><a class="dropdown-item text-white" href="{% url 'mail:recipient_list' %}">Мои Получатели</a></li>
+              <li><a class="dropdown-item text-white" href="{% url 'mail:letter_list' %}">Мои Письма</a></li>
+              <li><hr class="dropdown-divider "></li>
+              <li><a class="dropdown-item text-white" href="{% url 'mail:mailing_list' %}">Мои Рассылки</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <!-- Поиск (пример) -->
+        <form class="d-flex me-2" role="search" action="#" method="get">
+          <input class="form-control" type="search" name="q" placeholder="Поиск" aria-label="Search">
+        </form>
+
+        <!-- Кнопки авторизации (пример) -->
+        {% if user.is_authenticated %}
+          <div class="dropdown">
+            <a class="btn btn-outline-dark dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle me-1"></i>{{ user.username }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" style="background-color: #212529;">
+              <li><a class="dropdown-item text-white" href="{% url 'users:profile' %}">Профиль</a></li>
+              <li><a class="dropdown-item text-white" href="{% url 'users:change_profile' %}">Настройки</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <form action="{% url 'users:logout' %}" method="post" class="px-3 py-1">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-danger w-100">Выйти</button>
+                </form>
+              </li>
+            </ul>
+          </div>
+        {% else %}
+          <div>
+            <a class="nav-link" href="{% url 'users:login' %}">Войти</a>
+          </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </nav>
