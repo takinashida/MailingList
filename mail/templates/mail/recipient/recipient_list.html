@@ -23,6 +23,19 @@
           </div>
       </div>
       {% endfor %}
+      <div class="col-md-4 d-flex justify-content-center align-items-stretch p-3">
+          <div class="card border-0 shadow-lg w-100" style="background-color: #212529;">
+              <div class="text-center">
+                  <span class="fs-3 p-3 text-white">Добавить получателей</span>
+              </div>
+              <hr class="white-hr">
+              <div class="card-body">
+                  <p class="card-text text-white">Добавьте получателей для своих рассылок</p>
+
+                  <a href="{% url 'mail:recipient_create'%}" class="btn text-white" style="background-color: #1a1c1f;">Создать</a>
+              </div>
+          </div>
+      </div>
   </div>
 
 {% endblock %}

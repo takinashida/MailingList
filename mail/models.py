@@ -7,7 +7,7 @@ from users.models import User
 
 
 class Recipient(models.Model):
-    email=models.CharField(max_length=100, unique=True, verbose_name="Почта")
+    email=models.CharField(max_length=100, verbose_name="Почта")
     full_name=models.CharField(max_length=300, blank=True, null=True, verbose_name="Ф.И.О.")
     comment=models.TextField(verbose_name="Комментарий", blank=True, null=True)
     owner=models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Владелец")
@@ -44,8 +44,16 @@ class Mailing(models.Model):
         ("finished", "Завершена"),
     )
 
-    first_send=models.DateTimeField(verbose_name="Время запуска",  blank=True, null=True)
-    end_send=models.DateTimeField(verbose_name="Время завершения",  blank=True, null=True)
+    CYCLE_CHOICES=(
+        ("now", "Мгновенная"),
+        ("everyday","Ежедневная"),
+        ("everyweek","Еженедельная"),
+        ("everymonth", "Ежемесячная"),
+    )
+
+    first_send=models.DateTimeField(verbose_name="Время запуска")
+    end_send=models.DateTimeField(verbose_name="Время завершения")
+    cycle=models.CharField(max_length=100, choices=CYCLE_CHOICES, verbose_name="Цикл рассылки")
     status=models.CharField(max_length=100, choices=STATUS_CHOICES, default="created", verbose_name="Статус")
     letter=models.ForeignKey(Letter, on_delete=models.CASCADE, verbose_name="Письмо")
     recipients=models.ManyToManyField(Recipient, verbose_name="Получатель")

@@ -51,10 +51,31 @@ class LetterForm(forms.ModelForm):
 class MailingForm(forms.ModelForm):
     class Meta:
         model=Mailing
-        fields=["letter", "recipients"]
+        fields=["letter", "recipients", "first_send", "end_send", "cycle"]
+        widgets = {
+            "first_send": forms.DateTimeInput(
+                attrs={
+                    "type": "datetime-local",
+                    "class": "form-control",
+                    "placeholder": "Начало отправки",
+                },
+                format="%Y-%m-%dT%H:%M",
+            ),
+            "end_send": forms.DateTimeInput(
+                attrs={
+                    "type": "datetime-local",
+                    "class": "form-control",
+                    "placeholder": "Конец отправки",
+                },
+                format="%Y-%m-%dT%H:%M",
+            ),
+        }
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user")
         super(MailingForm, self).__init__(*args, **kwargs)
+        self.fields["recipients"].queryset = Recipient.objects.filter(owner=user)
+        self.fields["letter"].queryset = Letter.objects.filter(owner=user)
 
         self.fields["letter"].widget.attrs.update({
             "class": "form-control",
@@ -64,6 +85,27 @@ class MailingForm(forms.ModelForm):
         self.fields["recipients"].widget.attrs.update({
             "class": "form-control",
             "placeholder": "Выберете получателей:"
+        })
+
+        self.fields["first_send"].input_formats = ["%Y-%m-%dT%H:%M"]
+        self.fields["first_send"].widget.format="%Y-%m-%dT%H:%M"
+        self.fields["first_send"].widget.attrs.update({
+            "type": "datetime-local",
+            "class": "form-control",
+            "placeholder": "Начало отправки:"
+        })
+
+        self.fields["end_send"].input_formats = ["%Y-%m-%dT%H:%M"]
+        self.fields["end_send"].widget.format = "%Y-%m-%dT%H:%M"
+        self.fields["end_send"].widget.attrs.update({
+            "type": "datetime-local",
+            "class": "form-control",
+            "placeholder": "Конец отправки:"
+        })
+
+        self.fields["cycle"].widget.attrs.update({
+            "class": "form-control",
+            "placeholder": "Периодичность отправки:"
         })
 
 

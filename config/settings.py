@@ -15,6 +15,7 @@ from email.policy import default
 from pathlib import Path
 
 import django.core.cache.backends.redis
+from django.urls import reverse_lazy
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mail',
     'users',
+    'django_apscheduler'
 
 ]
 
@@ -156,7 +158,7 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS')  # app password
 
 AUTH_USER_MODEL = "users.User"
 LOGIN_URL = 'users:login'
-LOGIN_REDIRECT_URL = 'users:profile'
+LOGIN_REDIRECT_URL = 'mail:index'
 LOGOUT_REDIRECT_URL = 'users:login'
 
 # CACHE_ENABLED = True

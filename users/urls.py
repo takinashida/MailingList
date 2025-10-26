@@ -2,7 +2,7 @@ from django.contrib.auth.views import LogoutView, LoginView, PasswordResetView, 
     PasswordResetDoneView, PasswordResetCompleteView
 from django.contrib.messages import success
 from django.urls import path, include, reverse_lazy
-
+from users.views import ProfileList, ProfileBlock
 from config import settings
 from users.apps import UsersConfig
 
@@ -17,7 +17,9 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('register/', RegistrationView.as_view(), name='register'),
     path('email_confirm/<str:token>/', EmailVerification.as_view(), name='email_confirm'),
-    path('profile/', ProfileView.as_view(), name='profile'),
+    path('profile_list/', ProfileList.as_view(), name='profile_list'),
+    path("profile/<int:pk>/block/", ProfileBlock.as_view(), name="profile_block"),
+    path('profile/<int:pk>', ProfileView.as_view(), name='profile'),
     path('profile/change/', ChangeProfileView.as_view(), name='change_profile'),
 
     path('password_reset/', PasswordResetView.as_view(template_name = "users/password_reset.html",
@@ -26,7 +28,7 @@ urlpatterns = [
                                                       success_url = reverse_lazy("users:password_reset_done")), name='password_reset'),
     path('password_reset_confirm/<uidb64>/<token>/', PasswordResetConfirmView.as_view(template_name = "users/password_reset_confirm.html",
                                                                                                success_url = reverse_lazy("users:password_reset_complete")),
-         name='password_reset_confirm'),
+    name='password_reset_confirm'),
     path('password_reset_done/', PasswordResetDoneView.as_view(template_name = "users/password_reset_done.html"), name='password_reset_done'),
     path('password_reset_complete/', PasswordResetCompleteView.as_view(template_name = "users/password_reset_complete.html"), name='password_reset_complete'),
 

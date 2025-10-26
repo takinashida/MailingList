@@ -14,6 +14,7 @@ class User(AbstractUser):
         verbose_name="пользователь"
         verbose_name_plural="пользователи"
         ordering=["email"]
+        permissions = [("can_manage_users", "Can manage users")]
 
     def __str__(self):
         return self.username

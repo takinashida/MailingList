@@ -1,15 +1,20 @@
 import secrets
 
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.views import PasswordResetView
 from django.core.mail import send_mail as core_send_mail
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import View
-from django.views.generic import CreateView, DetailView, UpdateView
+from django.views.generic import CreateView, DetailView, UpdateView, ListView
 
 from config.settings import EMAIL_HOST_USER
 from users.forms import UserRegisterForm, UserChangeForm, UserAuthForm
 from users.models import User
+
+from django.contrib.auth.models import Group
+
 
 
 class RegistrationView(CreateView):
@@ -23,7 +28,7 @@ class RegistrationView(CreateView):
         token = secrets.token_hex(16)
         user.token = token
         user.save()
-        url = f"http://{self.request.get_host()}/users/email-confirm/{token}/"
+        url = f"http://{self.request.get_host()}/users/email_confirm/{token}/"
         core_send_mail(
             subject='Подтверждение почты',
             message=f"Для подтверждения почты перейдите по ссылке: {url}",
@@ -37,17 +42,36 @@ class EmailVerification(View):
         user = get_object_or_404(User, token=token)
         user.is_active = True
         user.token = None
+        group = Group.objects.get(name="Users")
+        user.groups.add(group)
         user.save()
+        
         return redirect('users:login')
 
-class ProfileView(DetailView):
+class ProfileList(LoginRequiredMixin,PermissionRequiredMixin, ListView):
+    model=User
+    template_name = "users/user_list.html"
+    permission_required = "users.can_manage_users"
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset
+
+class ProfileBlock(View):
+    def post(self, request, pk):
+        user = User.objects.get(pk=pk)
+        user.is_active = False
+        user.save()
+        return redirect("users:profile_list")
+
+
+class ProfileView(LoginRequiredMixin, DetailView):
     model=User
     template_name = "users/user_detail.html"
 
-    def get_object(self, queryset=None):
-        return self.request.user
 
-class ChangeProfileView(UpdateView):
+
+class ChangeProfileView(LoginRequiredMixin, UpdateView):
     model=User
     form_class = UserChangeForm
     template_name = "users/user_form.html"
