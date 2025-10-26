@@ -20,7 +20,13 @@ from django.core.cache import cache
 # Create your views here.
 class Index(View):
     def get(self, request):
-        return render(request, "mail/index.html")
+        all_mailings=len(Mailing.objects.filter(owner=request.user))
+        active_mailings=len(Mailing.objects.filter(owner=request.user, status="started"))
+        recipients=len(Recipient.objects.filter(owner=request.user))
+        context={"all_mailings":all_mailings,
+        "active_mailings":active_mailings,
+        "recipients":recipients}
+        return render(request, "mail/index.html", context)
 
 
 class RecipientCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
@@ -182,6 +188,13 @@ class MailingListView(LoginRequiredMixin,PermissionRequiredMixin, ListView):
         if self.request.user.has_perm("mail.can_manage_mailing"):
             return queryset
         return  queryset.filter(owner=self.request.user)
+
+class MailingBlock(View):
+    def post(self, request, pk):
+        mailing = Mailing.objects.get(pk=pk)
+        mailing.status= "finished"
+        mailing.save()
+        return redirect("mail:mailing_list")
 
 @method_decorator(cache_page(60 * 15), name='dispatch')
 class MailingDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):

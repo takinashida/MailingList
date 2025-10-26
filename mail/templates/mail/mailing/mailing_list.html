@@ -16,11 +16,21 @@
               {% for recipient in mailing.recipients.all|slice:3 %}
                   <p class="card-text text-white">{{ recipient.email }}</p>
               {% endfor %}
-                  {% if mailing.recipients > 3 %}
+                  {% if mailing.recipients.count > 3 %}
                   <p class="card-text text-white">...</p>
                   {% endif %}
 
-                  <a href="{% url 'mail:mailing_detail' mailing.pk %}" class="btn text-white" style="background-color: #1a1c1f;">Подробнее</a>
+
+                  {% if perms.mail.can_manage_mailing %}
+                      <form action="{% url 'mail:mailing_block' mailing.pk %}" method="post" style="display:inline;">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-primary" style="background-color: #1a1c1f;">Заблокировать рассылку</button>
+                      </form>
+                  {% else %}
+                    <a href="{% url 'mail:mailing_detail' mailing.pk %}" class="btn text-white" style="background-color: #1a1c1f;">Подробнее</a>
+                  {% endif %}
+
+
               </div>
           </div>
       </div>

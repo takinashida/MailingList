@@ -9,7 +9,9 @@
         <h2 class="text-center ">Уведомление</h2>
         <form method="post" enctype="multipart/form-data" >
             <div class="card" style="background-color: #212529;">
-                <p class="card-text text-white" >Pong!</p>
+                <p class="card-text text-white" >Всего рассылок:{{ all_mailings }}</p>
+                <p class="card-text text-white" >Активных рассылок:{{ active_mailings }}</p>
+                <p class="card-text text-white" >Уникальных получателей:{{ recipients }}</p>
 
                 <a href='#' class="btn text-white" style="background-color: #1a1c1f;">
                     Вернуться на главную
