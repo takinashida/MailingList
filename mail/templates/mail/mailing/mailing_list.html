@@ -1,0 +1,53 @@
+{% extends 'mail/base.html' %}
+{% block title %}Список получателей{% endblock %}
+
+{% block content %}
+<!-- Контент -->
+
+  <div class="row justify-content-center">
+      {% for mailing in object_list %}
+      <div class="col-md-4 d-flex justify-content-center align-items-stretch p-3">
+          <div class="card border-0 shadow-lg w-100" style="background-color: #212529;">
+              <div class="text-center">
+                  <span class="fs-3 p-3 text-white">{{ mailing.letter.subject }}</span>
+              </div>
+              <hr class="white-hr">
+              <div class="card-body">
+              {% for recipient in mailing.recipients.all|slice:3 %}
+                  <p class="card-text text-white">{{ recipient.email }}</p>
+              {% endfor %}
+                  {% if mailing.recipients.count > 3 %}
+                  <p class="card-text text-white">...</p>
+                  {% endif %}
+
+
+                  {% if perms.mail.can_manage_mailing %}
+                      <form action="{% url 'mail:mailing_block' mailing.pk %}" method="post" style="display:inline;">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-primary" style="background-color: #1a1c1f;">Заблокировать рассылку</button>
+                      </form>
+                  {% else %}
+                    <a href="{% url 'mail:mailing_detail' mailing.pk %}" class="btn text-white" style="background-color: #1a1c1f;">Подробнее</a>
+                  {% endif %}
+
+
+              </div>
+          </div>
+      </div>
+      {% endfor %}
+      <div class="col-md-4 d-flex justify-content-center align-items-stretch p-3">
+          <div class="card border-0 shadow-lg w-100" style="background-color: #212529;">
+              <div class="text-center">
+                  <span class="fs-3 p-3 text-white">Добавить рассылку</span>
+              </div>
+              <hr class="white-hr">
+              <div class="card-body">
+                  <p class="card-text text-white">Создайте кастомную рассылку</p>
+
+                  <a href="{% url 'mail:mailing_create'%}" class="btn text-white" style="background-color: #1a1c1f;">Создать</a>
+              </div>
+          </div>
+      </div>
+  </div>
+
+{% endblock %}

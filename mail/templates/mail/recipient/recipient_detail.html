@@ -1,0 +1,25 @@
+{% extends 'mail/base.html' %}
+{% block title %}{{ object.full_name }}{% endblock %}
+
+{% block content %}
+<!-- Контент -->
+
+
+<div class="col-md-4 d-flex justify-content-center align-items-stretch p-3">
+  <div class="card border-0 shadow-lg w-100" style="background-color: #212529;">
+      <div class="text-center">
+          <span class="fs-3 p-3 text-white">{{ object.full_name }}</span>
+          <br>
+          <span class="fs-6 text-white">{{ object.email }}</span>
+      </div>
+      <hr class="white-hr">
+      <div class="card-body">
+      {% if object.comment %}
+          <p class="card-text text-white">{{ object.comment| truncatechars:100 }}</p>
+      {% endif %}
+          <a href="{% url 'mail:recipient_update' recipient.pk %}" class="btn text-white" style="background-color: #1a1c1f;">Изменить {{ object.email}}</a>
+          <a href="{% url 'mail:recipient_delete' recipient.pk %}" class="btn text-white" style="background-color: #1a1c1f;">Удалить {{ object.email }}</a>
+      </div>
+  </div>
+</div>
+{% endblock %}
